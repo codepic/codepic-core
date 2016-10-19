@@ -35,6 +35,7 @@ namespace Codepic.Core.Mvc
             // Uncomment the following to configure URLs programmatically.
             // Since this is after UseConfiguraiton(config), this will clobber command line configuration.
             //builder.UseUrls("http://*:8080", "http://*:8081");
+            builder.UseUrls("http://*:5000");
 
             // If this app isn't hosted by IIS, UseIISIntegration() no-ops.
             // It isn't possible to both listen to requests directly and from IIS using the same WebHost,
