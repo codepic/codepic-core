@@ -18,13 +18,15 @@ namespace Codepic.Core.Mvc
             // Add command line configuration source to read command line parameters.
             var config = new ConfigurationBuilder()
                 .AddCommandLine(args)
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
                 .Build();
 
             Server = config["server"] ?? "Kestrel";
 
             var builder = new WebHostBuilder()
-                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseConfiguration(config)
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
                 .UseStartup<Startup>();
 
             // The default listening address is http://localhost:5000 if none is specified.
@@ -34,8 +36,8 @@ namespace Codepic.Core.Mvc
 
             // Uncomment the following to configure URLs programmatically.
             // Since this is after UseConfiguraiton(config), this will clobber command line configuration.
-            //builder.UseUrls("http://*:8080", "http://*:8081");
-            builder.UseUrls("http://*:5000");
+            // builder.UseUrls("http://*:8080", "http://*:8081");
+            // builder.UseUrls("http://*:5000");
 
             // If this app isn't hosted by IIS, UseIISIntegration() no-ops.
             // It isn't possible to both listen to requests directly and from IIS using the same WebHost,
@@ -45,7 +47,7 @@ namespace Codepic.Core.Mvc
 
             if (string.Equals(Server, "Kestrel", StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine("Running demo with Kestrel.");
+                Console.WriteLine("Running with Kestrel.");
 
                 builder.UseKestrel(options =>
                 {
@@ -55,9 +57,10 @@ namespace Codepic.Core.Mvc
                     }
                 });
             }
+
             else if (string.Equals(Server, "WebListener", StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine("Running demo with WebListener.");
+                Console.WriteLine("Running with WebListener.");
 
                 builder.UseWebListener(options =>
                 {
@@ -65,6 +68,7 @@ namespace Codepic.Core.Mvc
                     options.ListenerSettings.Authentication.AllowAnonymous = true;
                 });
             }
+            
             else
             {
                 Console.WriteLine($"Error: Unknown server value: '{Server}'. The valid server options are 'Kestrel' and 'WebListener'.");
@@ -81,7 +85,7 @@ namespace Codepic.Core.Mvc
                     return 1;
                 }
 
-                Server = "IIS/Kestrel";
+                //Server = "IIS/Kestrel";
 
                 Console.WriteLine("Hosted by IIS.");
             }
