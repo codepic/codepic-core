@@ -56,19 +56,28 @@
         * **Nano server edition:** `Datacenter`
         * **Optional packages:** `Containers`
         * **Select:** Enable WinRM and remote PowerShell connections from all subnets
-        * Once created, save the PowerShell command for later Setup
+        * Once created, save the PowerShell command for later Setup (see below)
      
         ```PowerShell
-        New-NanoServerImage 
-           -MediaPath 'C:\path\to\your\en_windows_server_2016_x64_dvd_9327751'
-           -Edition 'Datacenter'
-           -DeploymentType Guest
-           -TargetPath 'C:\path\to\your\ContainerVM.vhdx'
-           -MaxSize 8589934592
-           -EnableRemoteManagementPort
-           -SetupUI ('NanoServer.Containers')
-           -ComputerName 'ContainerVM'
-           -SetupCompleteCommand ('tzutil.exe /s "FLE Standard Time"')
+        $mediaPath = 'C:\Users\nsd\Downloads\en_windows_server_2016_x64_dvd_9327751'
+        $targetPath = 'C:\Hyper-V\Images\ContainerHost.vhdx'
+
+        Import-Module -Name "$mediaPath\NanoServer\NanoServerImageGenerator\NanoServerImageGenerator.psm1"
+
+        $adminPwd = ConvertTo-SecureString '***' -AsPlainText -Force
+
+        New-NanoServerImage `
+            -AdministratorPassword $adminPwd `
+            -DeploymentType Guest `
+            -Edition Datacenter `
+            -ComputerName ContainerHost `
+            -TargetPath $targetPath `
+            -MediaPath $mediaPath `
+            -MaxSize 4294967296 `
+            -Compute `
+            -Containers `
+            -EnableRemoteManagementPort `
+            -SetupCompleteCommand ('tzutil.exe /s "FLE Standard Time"')
         ```
     
     7. **Create:** New Virtual Machine with Hyper-VContainerVM
@@ -98,15 +107,13 @@
     11. Install Windows Updates
     
         ```PowerShell
-        $sess = New-CimInstance -Namespace root/Microsoft/Windows/WindowsUpdate -ClassName MSFT_WUOperationsSession
-        Invoke-CimMethod -InputObject $sess -MethodName ApplyApplicableUpdates
+        $ci = New-CimInstance -Namespace root/Microsoft/Windows/WindowsUpdate -ClassName MSFT_WUOperationsSession
+        Invoke-CimMethod -InputObject $ci -MethodName ApplyApplicableUpdates
+        Restart-Computer; exit # Remember to initiate a new session.
         ```
-    
-    12. Reboot the system once the updates have been applied.
 
-        ```PowerShell
-        Restart-Computer
-        ```
+        This'll take quite some time so it's not such a bad idea to export VM afterwards.
+
 
 * ## **Set Up:** Docker and Container Images
 
@@ -162,4 +169,29 @@
        ```PowerShell
        Restart-Service docker
        ```
+
+* ## **Prepare:** [Remote Client](https://msdn.microsoft.com/en-us/virtualization/windowscontainers/deployment/deployment_nano#prepare-remote-client)
+
+    1. **On the Local Machine**
+    2. **Download:** Docker Client
+
+       ```PowerShell
+       Invoke-WebRequest "https://download.docker.com/components/engine/windows-server/cs-1.12/docker.zip" -OutFile "$env:TEMP\docker.zip" -UseBasicParsing
+       ```
+
+    3. **Extract:** Downloaded Client
+
+       ```PowerShell
+       Expand-Archive -Path "$env:TEMP\docker.zip" -DestinationPath $env:ProgramFiles
+       ```
+
+    4. **Add to Path** Docker directory
+
+       ```PowerShell
+       # For quick use, does not require shell to be restarted.
+       $env:path += ";c:\program files\docker"
        
+       # For persistent use, will apply even after a reboot. 
+       [Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files\Docker", [EnvironmentVariableTarget]::Machine)
+       ```
+

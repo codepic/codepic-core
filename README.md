@@ -11,6 +11,10 @@ Experimenting with `ASP.NET Core` running on different minimal and high performa
 
 ## Servers
 
-- [util/nginx](util/nginx/README.md)
+- [src/nano](srv/nano/README.md)
+
+  Nano Server 2016 Container Host
+
+- [srv/nginx](srv/nginx/README.md)
 
    Nginx Reverse Proxy for Asp.Net Core Site Running on Kestrel
