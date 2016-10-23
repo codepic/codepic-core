@@ -1,5 +1,5 @@
 
-# codepic.core.mvc
+# nano.core.web
 
 Nano Server 2016 / IIS 10 Reverse Proxy for Asp.Net Core Site Running on Kestrel
 
