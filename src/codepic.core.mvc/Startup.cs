@@ -45,8 +45,6 @@ namespace Codepic.Core.Mvc
 
             app.Run(async (context) =>
             {
-                
-                
                 await context.Response.WriteAsync($"Hosted by {Program.Server}\r\n\r\n");
 
                 switch(context.Request.Path){
@@ -61,12 +59,10 @@ namespace Codepic.Core.Mvc
                 
                 if (serverAddressesFeature != null)
                 {
-                    await context.Response.WriteAsync($"Listening on the following addresses: {string.Join(", ", serverAddressesFeature.Addresses)}\r\n\r\n");
+                    await context.Response.WriteAsync($"Listening on: {string.Join(", ", serverAddressesFeature.Addresses)}\r\n\r\n");
                 }
 
-                await context.Response.WriteAsync($"Request URL: {context.Request.GetDisplayUrl()}\r\n\r\n");
-
-                await context.Response.WriteAsync($"{context.Request.Path}");
+                await context.Response.WriteAsync($"Served on: {context.Request.GetDisplayUrl()}\r\n\r\n");
             });
         }
     }

@@ -85,7 +85,7 @@ namespace Codepic.Core.Mvc
                     return 1;
                 }
 
-                //Server = "IIS/Kestrel";
+                Server = "IIS/Kestrel";
 
                 Console.WriteLine("Hosted by IIS.");
             }
