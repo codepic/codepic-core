@@ -1,7 +1,7 @@
 
-# codepic-core
+# nano.core
 
-Experimenting with `ASP.NET Core`
+Experimenting with `ASP.NET Core` running on different minimal and high performance configurations.
 
 ## Projects
 
