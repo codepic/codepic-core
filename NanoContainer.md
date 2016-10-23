@@ -1,1 +1,3 @@
-New-NanoServerImage -MediaPath 'D:\Hyper-V\Images\en_windows_server_2016_x64_dvd_9327751' -Edition 'Datacenter' -DeploymentType Guest -TargetPath 'D:\Hyper-V\Images\NanoContainer.vhdx' -MaxSize 8589934592 -EnableRemoteManagementPort -SetupUI ('NanoServer.Containers') -ComputerName 'NanoContainer' -SetupCompleteCommand ('tzutil.exe /s "FLE Standard Time"') -LogPath 'C:\Users\JaniHyyti‰inen\AppData\Local\Temp\NanoServerImageBuilder\Logs\2016-10-23 18-13'
+```PowerShell
+New-NanoServerImage -MediaPath 'D:\Hyper-V\Images\en_windows_server_2016_x64_dvd_9327751' -Edition 'Datacenter' -DeploymentType Guest -TargetPath 'D:\Hyper-V\Images\NanoContainer.vhdx' -MaxSize 8589934592 -EnableRemoteManagementPort -SetupUI ('NanoServer.Containers') -ComputerName 'NanoContainer' -SetupCompleteCommand ('tzutil.exe /s "FLE Standard Time"') -LogPath 'C:\Users\JaniHyyti√§inen\AppData\Local\Temp\NanoServerImageBuilder\Logs\2016-10-23 18-13'
+```
