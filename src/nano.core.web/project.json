@@ -55,7 +55,7 @@
     },
 
     "tooling": {
-        "defaultNamespace": "codepic.core.mvc"
+        "defaultNamespace": "nano.core.web"
     }
 
 }
