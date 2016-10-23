@@ -1,14 +1,23 @@
 {
     "version": "0.1.0",
-    "command": "dotnet",
+    "command": "cmd",
     "isShellCommand": true,
-    "args": [],
+    "args": ["/k"],
     "tasks": [{
-        "taskName": "build",
-        "args": [
-            "${workspaceRoot}\\src\\codepic.core.mvc\\project.json"
-        ],
-        "isBuildCommand": true,
-        "problemMatcher": "$msCompile"
-    }]
+            "taskName": "build",
+            "suppressTaskName": true,
+            "args": [
+                "dotnet build ${workspaceRoot}\\src\\codepic.core.mvc\\project.json"
+            ],
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "Nginx",
+            "suppressTaskName": false,
+            "isBuildCommand": false,
+            "args": [],
+            "showOutput": "always"
+        }
+    ]
 }
