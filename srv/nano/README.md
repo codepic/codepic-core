@@ -115,7 +115,7 @@
         This'll take quite some time so it's not such a bad idea to export VM afterwards.
 
 
-* ## **Set Up:** Docker and Container Images
+* ## **Set Up:** [Docker and Container Images](https://msdn.microsoft.com/en-us/virtualization/windowscontainers/deployment/deployment)
 
     1. **Install:** OneGet PowerShell Module
 
@@ -146,6 +146,34 @@
        docker pull microsoft/windowsservercore
        ```
 
+* ## **Set Up:** [Hyper-V Container Host](https://msdn.microsoft.com/en-us/virtualization/windowscontainers/deployment/deployment#hyper-v-container-host)
+
+    1. **Enable:** Nested Virtualization
+
+       ***The following script will configure nested virtualization for the container host. This script is run on the parent `Hyper-V machine`. Ensure that the container host virtual machine is `turned off` when running this script.***
+
+       ```PowerShell
+       #replace with the virtual machine name
+       $vm = "<virtual-machine>"
+   
+       #configure virtual processor
+       Set-VMProcessor -VMName $vm -ExposeVirtualizationExtensions $true -Count 2
+   
+       #disable dynamic memory
+       Set-VMMemory $vm -DynamicMemoryEnabled $false
+   
+       #enable mac spoofing
+       Get-VMNetworkAdapter -VMName $vm | Set-VMNetworkAdapter -MacAddressSpoofing On
+       ```
+
+    2. **Enable:** Hyper-V role
+
+       ***This is run on the `Container Host`.
+
+       ```PowerShell
+       Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V –All
+       ```
+
 * ## **Set Up:** [Manage Docker on Nano Server](https://msdn.microsoft.com/en-us/virtualization/windowscontainers/deployment/deployment_nano#manage-docker-on-nano-server)
 
     1. **Prepare:** Container Host
@@ -161,7 +189,8 @@
        ```
 
        ```PowerShell
-       Add-Content 'c:\programdata\docker\config\daemon.json' '{ "hosts": ["tcp://0.0.0.0:2375", "npipe://"] }'
+       # Note: Replace the dns server addresses with yours.
+       Add-Content 'c:\programdata\docker\config\daemon.json' '{ "hosts": ["tcp://0.0.0.0:2375", "npipe://"], "dns": ["192.168.100.1"] }'
        ```
 
     3. **Restart:** Docker service.
@@ -172,7 +201,7 @@
 
 * ## **Prepare:** [Remote Client](https://msdn.microsoft.com/en-us/virtualization/windowscontainers/deployment/deployment_nano#prepare-remote-client)
 
-    1. **On the Local Machine**
+    1. **On the `Local` Machine**
     2. **Download:** Docker Client
 
        ```PowerShell
@@ -195,3 +224,10 @@
        [Environment]::SetEnvironmentVariable("Path", $env:Path + ";C:\Program Files\Docker", [EnvironmentVariableTarget]::Machine)
        ```
 
+    5. **Configure** `DOCKER_HOST` *(optional)*
+    
+       An environmental variable `DOCKER_HOST` can be created which will remove the -H parameter requirement. The following PowerShell command can be used for this.
+
+       ```PowerShell
+       $env:DOCKER_HOST = "tcp://192.168.100.100:2375"
+       ```
